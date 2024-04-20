@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medication Reminder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 400px;
+    }
+    input[type="text"], select, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #8FA6CB;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #8FA6CB;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Medication Reminder</h2>
+    <form id="medicationForm">
+      <label for="medicationName">Medication Name:</label>
+      <input type="text" id="medicationName" name="medicationName" required>
+      <label for="dosage">Dosage:</label>
+      <input type="text" id="dosage" name="dosage" required>
+      <label for="frequency">Frequency:</label>
+      <select id="frequency" name="frequency" required>
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+      </select>
+      <label for="time">Time:</label>
+      <input type="time" id="time" name="time" required>
+      <button type="submit">Set Reminder</button>
+    </form>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    document.getElementById('medicationForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const medicationName = document.getElementById('medicationName').value;
+      const dosage = document.getElementById('dosage').value;
+      const frequency = document.getElementById('frequency').value;
+      const time = document.getElementById('time').value;
+      
+     
+      let message = '';
+      switch (frequency) {
+        case 'daily':
+          message = `Reminder set for ${medicationName} - Dosage: ${dosage}, Frequency: ${frequency}, Time: ${time}`;
+          scheduleDailyReminder(time, message);
+          break;
+        case 'weekly':
+          message = `Reminder set for ${medicationName} - Dosage: ${dosage}, Frequency: ${frequency}, Time: ${time}`;
+          scheduleWeeklyReminder(time, message);
+          break;
+        case 'monthly':
+          message = `Reminder set for ${medicationName} - Dosage: ${dosage}, Frequency: ${frequency}, Time: ${time}`;
+          scheduleMonthlyReminder(time, message);
+          break;
+      }
+      
+      document.getElementById('message').textContent = message;
+    });
+
+    function scheduleDailyReminder(time, message) {
+      const [hours, minutes] = time.split(':').map(Number);
+      const now = new Date();
+      const reminderTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+      if (reminderTime < now) {
+        reminderTime.setDate(reminderTime.getDate() + 1);
+      }
+      const delay = reminderTime - now;
+      setTimeout(() => {
+        alert(message);
+
+      }, delay);
+    }
+
+    function scheduleWeeklyReminder(time, message) {
+      const [hours, minutes] = time.split(':').map(Number);
+      const now = new Date();
+      const daysUntilNextWeekday = (7 - now.getDay() + 1) % 7; 
+      const reminderDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysUntilNextWeekday, hours, minutes);
+      const delay = reminderDate - now;
+      setTimeout(() => {
+        alert(message);
+       
+      }, delay);
+    }
+
+    function scheduleMonthlyReminder(time, message) {
+      const [hours, minutes] = time.split(':').map(Number);
+      const now = new Date();
+      const nextMonth = (now.getMonth() === 11) ? 0 : now.getMonth() + 1;
+      const reminderDate = new Date(now.getFullYear(), nextMonth, 1, hours, minutes);
+      const delay = reminderDate - now;
+      setTimeout(() => {
+        alert(message);
+   
+      }, delay);
+    }
+  </script>
+</body>
+</html>
